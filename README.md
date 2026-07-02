@@ -6,6 +6,26 @@ Goal: implement effectively-once processing between:
 - RabbitMQ cluster
 - .NET consumer
 
+Current branch: step 1 baseline with a default .NET publisher, default RabbitMQ, and default .NET consumer running in Docker.
+
+## Run
+
+```bash
+docker compose -f infra/docker-compose.yml up --build
+```
+
+Send one random message:
+
+```bash
+curl -X POST http://localhost:8080/messages
+```
+
+RabbitMQ management UI:
+
+- URL: http://localhost:15672
+- User: `guest`
+- Password: `guest`
+
 RabbitMQ is an at-least-once message broker. It can redeliver messages, so true end-to-end exactly-once delivery must be handled by the applications.
 
 This architecture targets exactly-once business effects.
