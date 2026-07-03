@@ -20,6 +20,12 @@ Send one random message:
 curl -X POST http://localhost:8080/messages
 ```
 
+Run k6 load test:
+
+```bash
+docker compose -f infra/docker-compose.yml --profile load-test run --rm k6
+```
+
 ## Registry Images
 
 GitHub Actions builds and pushes two images to GitHub Container Registry:
