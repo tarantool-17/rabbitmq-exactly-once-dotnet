@@ -27,11 +27,11 @@ GitHub Actions builds and pushes two images to GitHub Container Registry:
 - `ghcr.io/tarantool-17/rabbitmq-exactly-once-dotnet-publisher`
 - `ghcr.io/tarantool-17/rabbitmq-exactly-once-dotnet-consumer`
 
-The workflow runs only on pushes to `master`, including PR merges into `master`.
+The workflow runs only on pushes to `main`, including PR merges into `main`.
 
-Each successful `master` push publishes these tags:
+Each successful `main` push publishes these tags:
 
-- `master`
+- `main`
 - `latest`
 - `sha-<short-sha>`
 
