@@ -39,3 +39,15 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+
+  k6:
+    image: grafana/k6:latest
+    profiles:
+      - load-test
+    environment:
+      API_URL: http://publisher:8080/messages
+    volumes:
+      - ./k6:/scripts:ro
+    command: run /scripts/messages.js
+    depends_on:
+      - publisher
