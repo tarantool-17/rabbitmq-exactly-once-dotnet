@@ -1,0 +1,39 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: exactly-once-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  publisher:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_NAMESPACE:-tarantool-17}/${PUBLISHER_IMAGE:-rabbitmq-exactly-once-dotnet-publisher}:${IMAGE_TAG:-latest}
+    pull_policy: always
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+      RABBITMQ_QUEUE: message
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  consumer:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_NAMESPACE:-tarantool-17}/${CONSUMER_IMAGE:-rabbitmq-exactly-once-dotnet-consumer}:${IMAGE_TAG:-latest}
+    pull_policy: always
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+      RABBITMQ_QUEUE: message
+    depends_on:
+      rabbitmq:
+        condition: service_healthy

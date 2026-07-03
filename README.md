@@ -20,6 +20,41 @@ Send one random message:
 curl -X POST http://localhost:8080/messages
 ```
 
+## Registry Images
+
+GitHub Actions builds and pushes two images to GitHub Container Registry:
+
+- `ghcr.io/tarantool-17/rabbitmq-exactly-once-dotnet-publisher`
+- `ghcr.io/tarantool-17/rabbitmq-exactly-once-dotnet-consumer`
+
+The workflow runs only on pushes to `master`, including PR merges into `master`.
+
+Each successful `master` push publishes these tags:
+
+- `master`
+- `latest`
+- `sha-<short-sha>`
+
+To run the registry images on a laptop:
+
+```bash
+cp infra/registry.env.example infra/registry.env
+docker compose --env-file infra/registry.env -f infra/docker-compose.registry.yml pull
+docker compose --env-file infra/registry.env -f infra/docker-compose.registry.yml up -d
+```
+
+Use a different tag when you want a pinned commit:
+
+```bash
+IMAGE_TAG=sha-<short-sha> docker compose -f infra/docker-compose.registry.yml up -d
+```
+
+If the GHCR packages are private, log in on each laptop with a GitHub token that can read packages:
+
+```bash
+echo "$GHCR_TOKEN" | docker login ghcr.io -u <github-username> --password-stdin
+```
+
 RabbitMQ management UI:
 
 - URL: http://localhost:15672
